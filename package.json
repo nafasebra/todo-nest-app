@@ -1,0 +1,13 @@
+{
+  "name": "todo-nest-app",
+  "version": "1.0.0",
+  "description": "Todo list manager (frontend + backend)",
+  "scripts": {
+    "server": "npm run start:dev --prefix backend",
+    "client": "npm run start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "keywords": [],
+  "author": "Nafas Ebrahimi",
+  "license": "MIT"
+}
