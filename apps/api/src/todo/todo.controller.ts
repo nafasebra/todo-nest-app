@@ -14,7 +14,7 @@ export class TodoController {
   @Get()
   @ApiOperation({ summary: 'Get all todos' })
   @ApiResponse({ status: 200, description: 'Returns all todos' })
-  getAllTodos(): Todo[] {
+  async getAllTodos() {
     return this.todoService.getAllTodos();
   }
 
@@ -22,7 +22,7 @@ export class TodoController {
   @ApiOperation({ summary: 'Get a todo by ID' })
   @ApiResponse({ status: 200, description: 'Returns a single todo by ID' })
   @ApiResponse({ status: 404, description: 'Todo not found' })
-  getTodoById(@Param('id') id: string): Todo | undefined {
+  async getTodoById(@Param('id') id: string) {
     return this.todoService.getTodoById(Number(id));
   }
 
@@ -30,7 +30,7 @@ export class TodoController {
   @ApiOperation({ summary: 'Create a new todo' })
   @ApiResponse({ status: 201, description: 'Todo created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  createTodo(@Body() todo: Omit<Todo, 'id' | 'createdAt'>): Todo {
+  async createTodo(@Body() todo: Omit<Todo, 'id' | 'createdAt'>) {
     return this.todoService.createTodo(todo);
   }
 
@@ -39,7 +39,7 @@ export class TodoController {
   @ApiResponse({ status: 200, description: 'Todo updated successfully' })
   @ApiResponse({ status: 404, description: 'Todo not found' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  updateTodo(@Param('id') id: string, @Body() updateData: Partial<Todo>): Todo | undefined {
+  async updateTodo(@Param('id') id: string, @Body() updateData: Partial<Todo>) {
     return this.todoService.updateTodo(Number(id), updateData);
   }
 
@@ -47,7 +47,7 @@ export class TodoController {
   @ApiOperation({ summary: 'Delete a todo by ID' })
   @ApiResponse({ status: 200, description: 'Todo deleted successfully' })
   @ApiResponse({ status: 404, description: 'Todo not found' })
-  deleteTodo(@Param('id') id: string): Todo[] {
+  async deleteTodo(@Param('id') id: string) {
     return this.todoService.deleteTodo(Number(id));
   }
 }
