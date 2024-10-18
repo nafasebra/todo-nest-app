@@ -7,10 +7,9 @@ interface TodoItemProps {
     title: string;
     done: boolean;
   };
-  refetch: () => void;
 }
 
-function TodoItem({ item, refetch }: TodoItemProps) {
+function TodoItem({ item }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(item.title);
 
@@ -30,7 +29,6 @@ function TodoItem({ item, refetch }: TodoItemProps) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      refetch();
     } catch (error) {
       console.error("Error updating todo completion status:", error);
     }
@@ -62,7 +60,6 @@ function TodoItem({ item, refetch }: TodoItemProps) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       setIsEditing(false);
-      refetch();
     } catch (error) {
       console.error("Error updating todo:", error);
     }
@@ -85,7 +82,6 @@ function TodoItem({ item, refetch }: TodoItemProps) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      refetch();
     } catch (error) {
       console.error("Error deleting todo:", error);
     }

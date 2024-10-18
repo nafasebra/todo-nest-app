@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { AddIcon } from "../icons";
 
-
-
-function Form({ refetch }: { refetch: () => void }) {
+function Form() {
   const [input, setInput] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,7 +28,6 @@ function Form({ refetch }: { refetch: () => void }) {
       const result = await response.json();
       console.log('Todo added:', result);
       setInput('');
-      refetch()
     } catch (error) {
       console.error('Error adding todo:', error);
     }

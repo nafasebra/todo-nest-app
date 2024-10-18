@@ -1,7 +1,7 @@
 import { Controller, Patch } from '@nestjs/common';
 import { Body, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { Todo } from './todo.model';
+import { Todo } from './schema/todo.schema';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiOperation } from '@nestjs/swagger';
 import { ApiResponse } from '@nestjs/swagger';
@@ -18,6 +18,20 @@ export class TodoController {
     return this.todoService.getAllTodos();
   }
 
+  @Get('complete')
+  @ApiOperation({ summary: 'Get all completed todos' })
+  @ApiResponse({ status: 200, description: 'Returns all completed todos' })
+  async getCompletedTodos() {
+    return this.todoService.getAllTodos('complete');
+  }
+
+  @Get('incomplete')
+  @ApiOperation({ summary: 'Get all incomplete todos' })
+  @ApiResponse({ status: 200, description: 'Returns all incomplete todos' })
+  async getIncompleteTodos() {
+    return this.todoService.getAllTodos('incomplete');
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get a todo by ID' })
   @ApiResponse({ status: 200, description: 'Returns a single todo by ID' })
@@ -31,7 +45,7 @@ export class TodoController {
   @ApiResponse({ status: 201, description: 'Todo created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   async createTodo(@Body() todo: Omit<Todo, 'id' | 'createdAt'>) {
-    return this.todoService.createTodo(todo);
+    return this.todoService.createTodo(todo as any);
   }
 
   @Put(':id')
@@ -40,7 +54,7 @@ export class TodoController {
   @ApiResponse({ status: 404, description: 'Todo not found' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   async updateTodo(@Param('id') id: string, @Body() updateData: Partial<Todo>) {
-    return this.todoService.updateTodo(Number(id), updateData);
+    return this.todoService.updateTodo(Number(id), updateData as any);
   }
 
   @Delete(':id')
@@ -50,26 +64,18 @@ export class TodoController {
   async deleteTodo(@Param('id') id: string) {
     return this.todoService.deleteTodo(Number(id));
   }
-  
+
   @Patch(':id')
   @ApiOperation({ summary: 'Toggle complete a todo by ID' })
-  @ApiResponse({ status: 200, description: 'Todo completion toggled successfully' })
+  @ApiResponse({
+    status: 200,
+    description: 'Todo completion toggled successfully',
+  })
   @ApiResponse({ status: 404, description: 'Todo not found' })
-  async toggleCompletion(@Param('id') id: string, @Body() body: { done: boolean }) {
+  async toggleCompletion(
+    @Param('id') id: string,
+    @Body() body: { done: boolean },
+  ) {
     return this.todoService.updateTodo(Number(id), { done: body.done });
-  }
-
-  @Get('complete')
-  @ApiOperation({ summary: 'Get all completed todos' })
-  @ApiResponse({ status: 200, description: 'Returns all completed todos' })
-  async getCompletedTodos() {
-    return this.todoService.getCompletedTodos();
-  }
-
-  @Get('incomplete')
-  @ApiOperation({ summary: 'Get all incomplete todos' })
-  @ApiResponse({ status: 200, description: 'Returns all incomplete todos' })
-  async getIncompleteTodos() {
-    return this.todoService.getIncompleteTodos();
   }
 }

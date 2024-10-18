@@ -7,7 +7,16 @@ export type TodoDocument = Todo & Document;
 export class Todo {
   @Prop({ required: true })
   title: string;
+
+  @Prop({ required: true, default: false })
+  done: boolean;
+
+  @Prop({ required: true, default: Date.now })
+  createdAt: Date;
+
+  @Prop({ required: true, enum: ['low', 'medium', 'high'] })
+  priority: string;
 }
 
-export const ContactUsSchema = SchemaFactory.createForClass(Todo);
+export const TodoSchema = SchemaFactory.createForClass(Todo);
 
