@@ -23,7 +23,7 @@ function TodoItem({ item, refetch }: TodoItemProps) {
     }, 0);
   };
 
-  const handleSave = async () => {
+  const handleSaveEdition = async () => {
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_API_URL}/todo/${item.id}`,
@@ -48,7 +48,7 @@ function TodoItem({ item, refetch }: TodoItemProps) {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancelEdit = () => {
     setIsEditing(false);
     setEditedTitle(item.title);
   };
@@ -90,10 +90,10 @@ function TodoItem({ item, refetch }: TodoItemProps) {
       <div className="flex items-center justify-between gap-4">
         {isEditing ? (
           <>
-            <button onClick={handleCancel}>
+            <button onClick={handleCancelEdit}>
               <CancelIcon />
             </button>
-            <button onClick={handleSave}>
+            <button onClick={handleSaveEdition}>
               <CheckIcon />
             </button>
           </>
