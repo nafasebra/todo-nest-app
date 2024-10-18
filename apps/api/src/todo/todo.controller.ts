@@ -58,4 +58,18 @@ export class TodoController {
   async toggleCompletion(@Param('id') id: string, @Body() body: { done: boolean }) {
     return this.todoService.updateTodo(Number(id), { done: body.done });
   }
+
+  @Get('complete')
+  @ApiOperation({ summary: 'Get all completed todos' })
+  @ApiResponse({ status: 200, description: 'Returns all completed todos' })
+  async getCompletedTodos() {
+    return this.todoService.getCompletedTodos();
+  }
+
+  @Get('incomplete')
+  @ApiOperation({ summary: 'Get all incomplete todos' })
+  @ApiResponse({ status: 200, description: 'Returns all incomplete todos' })
+  async getIncompleteTodos() {
+    return this.todoService.getIncompleteTodos();
+  }
 }

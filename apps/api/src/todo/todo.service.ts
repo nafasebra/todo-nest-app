@@ -35,4 +35,12 @@ export class TodoService {
   deleteTodo(id: number): Todo[] {
     return this.todos = this.todos.filter(todo => todo.id !== id);
   }
+
+  getCompletedTodos(): Todo[] {
+    return this.todos.filter((todo) => todo.done === true)
+  }
+  
+  getIncompleteTodos(): Todo[] {
+    return this.todos.filter((todo) => todo.done !== true)
+  }
 }
