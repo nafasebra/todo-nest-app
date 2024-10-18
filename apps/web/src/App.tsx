@@ -39,7 +39,7 @@ function App() {
       <Form refetch={loadAllTodos} />
       <div className="flex flex-col gap-4">
         {data.map((item, index) => (
-          <TodoItem item={item} key={index} />
+          <TodoItem item={item} key={index} refetch={loadAllTodos} />
         ))}
       </div>
     </div>
