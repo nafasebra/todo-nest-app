@@ -1,9 +1,17 @@
 import { DeleteIcon, EditIcon } from "../icons";
 
-function TodoItem() {
+interface TodoItemProps {
+  item: {
+    id: string;
+    title: string;
+    completed: boolean;
+  };
+}
+
+function TodoItem({ item }: TodoItemProps) {
   return (
-    <div className="flex items-center justify-between py-2 px-3 bg-neutral-700 shadow-md shadow-black">
-      <p>Learning js</p>
+    <div className="flex items-center justify-between py-3 px-4 bg-neutral-800 shadow-md shadow-neutral-800">
+      <p>{item.title}</p>
       <div className="flex items-center justify-between gap-3">
         <button>
           <DeleteIcon />
