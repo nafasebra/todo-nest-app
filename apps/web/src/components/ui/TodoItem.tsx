@@ -5,7 +5,7 @@ interface TodoItemProps {
   item: {
     id: number;
     title: string;
-    completed: boolean;
+    done: boolean;
   };
   refetch: () => void;
 }
@@ -14,7 +14,29 @@ function TodoItem({ item, refetch }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(item.title);
 
-  const inputRef = useRef<HTMLInputElement>(null)
+  const handleToggleComplete = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ done: !item.done }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      refetch();
+    } catch (error) {
+      console.error("Error updating todo completion status:", error);
+    }
+  };
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -39,8 +61,6 @@ function TodoItem({ item, refetch }: TodoItemProps) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      console.log("Todo updated successfully");
       setIsEditing(false);
       refetch();
     } catch (error) {
@@ -65,8 +85,6 @@ function TodoItem({ item, refetch }: TodoItemProps) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      console.log("Todo deleted successfully");
       refetch();
     } catch (error) {
       console.error("Error deleting todo:", error);
@@ -85,7 +103,23 @@ function TodoItem({ item, refetch }: TodoItemProps) {
           placeholder="Edit your todo..."
         />
       ) : (
-        <p>{item.title}</p>
+        <label
+          htmlFor="complete"
+          className="flex items-center gap-3 cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            id="complete"
+            onChange={handleToggleComplete}
+            checked={item.done}
+            className="w-5 h-5 rounded-full border-2 border-white bg-transparent checked:bg-green-500 checked:border-green-500 cursor-pointer transition-all duration-150 ease-in-out hover:border-green-400 appearance-none"
+          />
+          <p
+            className={`pointer-events-none ${item.done ? "line-through text-neutral-400" : ""}`}
+          >
+            {item.title}
+          </p>
+        </label>
       )}
       <div className="flex items-center justify-between gap-4">
         {isEditing ? (

@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Patch } from '@nestjs/common';
 import { Body, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Todo } from './todo.model';
@@ -49,5 +49,13 @@ export class TodoController {
   @ApiResponse({ status: 404, description: 'Todo not found' })
   async deleteTodo(@Param('id') id: string) {
     return this.todoService.deleteTodo(Number(id));
+  }
+  
+  @Patch(':id')
+  @ApiOperation({ summary: 'Toggle complete a todo by ID' })
+  @ApiResponse({ status: 200, description: 'Todo completion toggled successfully' })
+  @ApiResponse({ status: 404, description: 'Todo not found' })
+  async toggleCompletion(@Param('id') id: string, @Body() body: { done: boolean }) {
+    return this.todoService.updateTodo(Number(id), { done: body.done });
   }
 }
