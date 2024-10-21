@@ -22,22 +22,14 @@ export class TodoController {
   @ApiOperation({ summary: 'Get all completed todos' })
   @ApiResponse({ status: 200, description: 'Returns all completed todos' })
   async getCompletedTodos() {
-    return this.todoService.getAllTodos('complete');
+    return this.todoService.getCompletedTodos();
   }
-
+  
   @Get('incomplete')
   @ApiOperation({ summary: 'Get all incomplete todos' })
   @ApiResponse({ status: 200, description: 'Returns all incomplete todos' })
   async getIncompleteTodos() {
-    return this.todoService.getAllTodos('incomplete');
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a todo by ID' })
-  @ApiResponse({ status: 200, description: 'Returns a single todo by ID' })
-  @ApiResponse({ status: 404, description: 'Todo not found' })
-  async getTodoById(@Param('id') id: string) {
-    return this.todoService.getTodoById(Number(id));
+    return this.todoService.getIncompleteTodos();
   }
 
   @Post()
@@ -45,7 +37,7 @@ export class TodoController {
   @ApiResponse({ status: 201, description: 'Todo created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   async createTodo(@Body() todo: Omit<Todo, 'id' | 'createdAt'>) {
-    return this.todoService.createTodo(todo as any);
+    return this.todoService.createTodo(todo);
   }
 
   @Put(':id')
@@ -54,7 +46,7 @@ export class TodoController {
   @ApiResponse({ status: 404, description: 'Todo not found' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
   async updateTodo(@Param('id') id: string, @Body() updateData: Partial<Todo>) {
-    return this.todoService.updateTodo(Number(id), updateData as any);
+    return this.todoService.updateTodo(id, updateData as any);
   }
 
   @Delete(':id')
@@ -62,7 +54,7 @@ export class TodoController {
   @ApiResponse({ status: 200, description: 'Todo deleted successfully' })
   @ApiResponse({ status: 404, description: 'Todo not found' })
   async deleteTodo(@Param('id') id: string) {
-    return this.todoService.deleteTodo(Number(id));
+    return this.todoService.deleteTodo(id);
   }
 
   @Patch(':id')
@@ -76,6 +68,6 @@ export class TodoController {
     @Param('id') id: string,
     @Body() body: { done: boolean },
   ) {
-    return this.todoService.updateTodo(Number(id), { done: body.done });
+    return this.todoService.updateTodo(id, { done: !body.done });
   }
 }

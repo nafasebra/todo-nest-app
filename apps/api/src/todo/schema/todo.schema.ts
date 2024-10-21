@@ -14,7 +14,7 @@ export class Todo {
   @Prop({ required: true, default: Date.now })
   createdAt: Date;
 
-  @Prop({ required: true, enum: ['low', 'medium', 'high'] })
+  @Prop({ enum: ['low', 'medium', 'high'] })
   priority: string;
 }
 

@@ -3,7 +3,7 @@ import { DeleteIcon, EditIcon, CheckIcon, CancelIcon } from "../icons";
 
 interface TodoItemProps {
   item: {
-    id: number;
+    _id: string;
     title: string;
     done: boolean;
   };
@@ -16,13 +16,12 @@ function TodoItem({ item }: TodoItemProps) {
   const handleToggleComplete = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item.id}`,
+        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item._id}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ done: !item.done }),
+          }
         }
       );
 
@@ -46,7 +45,7 @@ function TodoItem({ item }: TodoItemProps) {
   const handleSaveEdition = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item.id}`,
+        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item._id}`,
         {
           method: "PUT",
           headers: {
@@ -73,7 +72,7 @@ function TodoItem({ item }: TodoItemProps) {
   const deleteTodo = async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item.id}`,
+        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item._id}`,
         {
           method: "DELETE",
         }
