@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
 import { DeleteIcon, EditIcon, CheckIcon, CancelIcon } from "../icons";
+import { useLoadTodos } from "../../hooks/useFetch";
+import { useTodoContext } from "../context";
 
 interface TodoItemProps {
   item: {
@@ -12,6 +14,8 @@ interface TodoItemProps {
 function TodoItem({ item }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(item.title);
+  const {activeTab} = useTodoContext()
+  const {refetch} = useLoadTodos(activeTab)
 
   const handleToggleComplete = async () => {
     try {
@@ -21,13 +25,15 @@ function TodoItem({ item }: TodoItemProps) {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
+          body: JSON.stringify({ done: !item.done }),
         }
       );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      refetch()
     } catch (error) {
       console.error("Error updating todo completion status:", error);
     }
@@ -99,12 +105,12 @@ function TodoItem({ item }: TodoItemProps) {
         />
       ) : (
         <label
-          htmlFor="complete"
+          htmlFor={item._id}
           className="flex items-center gap-3 cursor-pointer"
         >
           <input
             type="checkbox"
-            id="complete"
+            id={item._id}
             onChange={handleToggleComplete}
             checked={item.done}
             className="w-5 h-5 rounded-full border-2 border-white bg-transparent checked:bg-green-500 checked:border-green-500 cursor-pointer transition-all duration-150 ease-in-out hover:border-green-400 appearance-none"

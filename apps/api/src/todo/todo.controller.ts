@@ -68,6 +68,6 @@ export class TodoController {
     @Param('id') id: string,
     @Body() body: { done: boolean },
   ) {
-    return this.todoService.updateTodo(id, { done: !body.done });
+    return this.todoService.updateTodo(id, { done: body.done });
   }
 }
