@@ -14,8 +14,8 @@ interface TodoItemProps {
 function TodoItem({ item }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(item.title);
-  const {activeTab} = useTodoContext()
-  const {refetch} = useLoadTodos(activeTab)
+  const { activeTab } = useTodoContext();
+  const { refetch } = useLoadTodos(activeTab);
 
   const handleToggleComplete = async () => {
     try {
@@ -33,7 +33,7 @@ function TodoItem({ item }: TodoItemProps) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      refetch()
+      refetch();
     } catch (error) {
       console.error("Error updating todo completion status:", error);
     }
@@ -65,6 +65,7 @@ function TodoItem({ item }: TodoItemProps) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       setIsEditing(false);
+      refetch();
     } catch (error) {
       console.error("Error updating todo:", error);
     }
@@ -87,6 +88,7 @@ function TodoItem({ item }: TodoItemProps) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      refetch();
     } catch (error) {
       console.error("Error deleting todo:", error);
     }
