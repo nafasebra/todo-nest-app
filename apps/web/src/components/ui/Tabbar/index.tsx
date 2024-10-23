@@ -37,7 +37,7 @@ function Tabbar({ data, isLoading }: Props) {
           Array.from({ length: 3 }).map((_, index) => (
             <div
               key={index}
-              className={`${activeTab === index ? "block" : "hidden"}`}
+              className={`${activeTab === index ? "flex flex-col gap-3" : "hidden"}`}
             >
               {data &&
                 data.map((item, index) => <TodoItem item={item} key={index} />)}

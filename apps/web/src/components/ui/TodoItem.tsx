@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { DeleteIcon, EditIcon, CheckIcon, CancelIcon } from "../icons";
 import { useLoadTodos } from "../../hooks/useFetch";
 import { useTodoContext } from "../context";
+import { useMutation } from "@tanstack/react-query";
 
 interface TodoItemProps {
   item: {
@@ -11,33 +12,107 @@ interface TodoItemProps {
   };
 }
 
+const saveTodoEdition = async ({
+  id,
+  title,
+}: {
+  id: string;
+  title: string;
+}) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_API_URL}/todo/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ title }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+const toggleTodoCompletion = async ({
+  id,
+  done,
+}: {
+  id: string;
+  done: boolean;
+}) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_API_URL}/todo/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ done: !done }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+const deleteTodoById = async ({ id }: { id: string }) => {
+  const response = await fetch(
+    `${import.meta.env.VITE_SERVER_API_URL}/todo/${id}`,
+    {
+      method: "DELETE",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+};
+
 function TodoItem({ item }: TodoItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(item.title);
   const { activeTab } = useTodoContext();
   const { refetch } = useLoadTodos(activeTab);
 
-  const handleToggleComplete = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ done: !item.done }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+  const handleEditMutation = useMutation({
+    mutationFn: saveTodoEdition,
+    onSuccess: () => {
+      setIsEditing(false);
       refetch();
-    } catch (error) {
+    },
+    onError: (error) => {
+      console.error("Error updating todo:", error);
+    },
+  });
+
+  const handleToggleComplete = useMutation({
+    mutationFn: toggleTodoCompletion,
+    onSuccess: () => {
+      refetch();
+    },
+    onError: (error) => {
       console.error("Error updating todo completion status:", error);
-    }
-  };
+    },
+  });
+
+  const handleDeleteTodo = useMutation({
+    mutationFn: deleteTodoById,
+    onSuccess: () => {
+      refetch();
+    },
+    onError: (error) => {
+      console.error("Error deleting todo:", error);
+    },
+  });
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -48,50 +123,9 @@ function TodoItem({ item }: TodoItemProps) {
     }, 0);
   };
 
-  const handleSaveEdition = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ title: editedTitle }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      setIsEditing(false);
-      refetch();
-    } catch (error) {
-      console.error("Error updating todo:", error);
-    }
-  };
-
   const handleCancelEdit = () => {
     setIsEditing(false);
     setEditedTitle(item.title);
-  };
-
-  const deleteTodo = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER_API_URL}/todo/${item._id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      refetch();
-    } catch (error) {
-      console.error("Error deleting todo:", error);
-    }
   };
 
   return (
@@ -113,7 +147,9 @@ function TodoItem({ item }: TodoItemProps) {
           <input
             type="checkbox"
             id={item._id}
-            onChange={handleToggleComplete}
+            onChange={() =>
+              handleToggleComplete.mutate({ id: item._id, done: item.done })
+            }
             checked={item.done}
             className="w-5 h-5 rounded-full border-2 border-white bg-transparent checked:bg-green-500 checked:border-green-500 cursor-pointer transition-all duration-150 ease-in-out hover:border-green-400 appearance-none"
           />
@@ -130,13 +166,20 @@ function TodoItem({ item }: TodoItemProps) {
             <button onClick={handleCancelEdit}>
               <CancelIcon />
             </button>
-            <button onClick={handleSaveEdition}>
+            <button
+              onClick={() =>
+                handleEditMutation.mutate({
+                  id: item._id,
+                  title: editedTitle,
+                })
+              }
+            >
               <CheckIcon />
             </button>
           </>
         ) : (
           <>
-            <button onClick={deleteTodo}>
+            <button onClick={() => handleDeleteTodo.mutate({ id: item._id })}>
               <DeleteIcon />
             </button>
             <button onClick={handleEdit}>

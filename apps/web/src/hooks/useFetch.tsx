@@ -10,7 +10,6 @@ async function loadTodos(index: number) {
   } else {
     url = `${import.meta.env.VITE_SERVER_API_URL}/todo`;
   }
-  console.log(url)
   return fetch(url, {
     method: "GET",
   }).then((res) => {
