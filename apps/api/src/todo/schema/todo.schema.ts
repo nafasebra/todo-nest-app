@@ -14,8 +14,8 @@ export class Todo {
   @Prop({ required: true, default: Date.now })
   createdAt: Date;
 
-  @Prop({ enum: ['low', 'medium', 'high'] })
-  priority: string;
+  // @Prop({ enum: ['low', 'medium', 'high'] })
+  // priority: string;
 }
 
 export const TodoSchema = SchemaFactory.createForClass(Todo);
