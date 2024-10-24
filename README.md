@@ -16,6 +16,10 @@ The project have two folders on `/apps` folder. they called `web` and `api`. the
 - Run mongodb database on your machine. if the program doesn't exist, [To get mongodb community server](https://www.mongodb.com/try/download/community)
 - Clone the project
 - Install node and npm/yarn package if doesn't exist on your machine.
+- Look the .env.example file in `app/web` dir. copy the file and rename to `.env` file, then add the server url. like this:
+```
+VITE_SERVER_API_URL=http://localhost:3000
+```
 - open terminal/cmd and change directory to the project dir, them, run `yarn dev` to run prject
 
 ### Build
